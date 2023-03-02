@@ -1,5 +1,14 @@
+node_modules/
+build/
+npm-debug.log
 .env
-__pycache__
-**/__pycache__/*
+.env.test
+.env.production
+.DS_Store
+.npm
+.eslintcache
 logs/
 *.log
+npm-debug.log*
+__pycache__
+**/__pycache__/*
