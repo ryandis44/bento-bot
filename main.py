@@ -111,6 +111,7 @@ async def main():
     async with client:
         await load_extensions()
         console.start()
-        await client.start(os.getenv('DISCORD_API_TOKEN'))
+        TOKEN = os.getenv('DISCORD_API_TOKEN')
+        await client.start(TOKEN)
 
 asyncio.run(main())
