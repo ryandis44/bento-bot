@@ -2,7 +2,9 @@ import discord
 import typing
 from discord.ext import commands
 from discord import app_commands
-        
+from Database.DatabaseConnector import Database
+
+sc = Database("SlashCommands.py")
 
 class SlashCommands(commands.Cog):
     def __init__(self, client):
@@ -85,8 +87,39 @@ class SlashCommands(commands.Cog):
     @app_commands.guild_only
     async def slash_test(self, interaction: discord.Interaction):
 
+        # Select will return a value if ONE is found, a list (array) if
+        # multiple values are found, or [] (empty list) if nothing is
+        # found.
+        val = sc.exec(
+            "SELECT val FROM STATISTICS WHERE "
+            f"stat='TEST_COMMAND' AND user_id='{interaction.user.id}'"
+        )
+        if val == [] or val is None:
+            # Insert does as it sounds, it will insert values
+            # into the 'STATISTICS' table and can be referenced
+            # using the select command.
+            sc.exec(
+                "INSERT INTO STATISTICS (user_id,stat,val) VALUES "
+                f"('{interaction.user.id}', 'TEST_COMMAND', '0')"
+            )
+            val = 1
+        
+        # Update changes a value or values of an entry in the
+        # referenced table (in this case statistics), based off
+        # a search criteria. In this case, we are updating
+        # 'val' where the user id is the id of the user
+        # running this command and the stat=TEST_COMMAND
+        sc.exec(
+            f"UPDATE STATISTICS SET val='{val+1}' WHERE "
+            f"user_id='{interaction.user.id}' AND stat='TEST_COMMAND'"
+        )
+
+
         await interaction.response.send_message(
-            content="Hello World"
+            content=(
+                f"Hello World\n"
+                f"You have run this command {val} times"
+            )
         )
 
 
