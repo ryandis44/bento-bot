@@ -1,3 +1,4 @@
+from Database.DatabaseConnector import connect_pool
 
 # Discord.py library. Has everything we need to 
 # interact with discord. Asyncio is a python
@@ -41,7 +42,7 @@ will interact with discord (Bento)
 '''
 client = discord.Client(intents=intents)
 client = commands.Bot(
-    command_prefix=['b'],
+    command_prefix=['!'],
     help_command=None,
     intents=intents
 )
@@ -107,6 +108,7 @@ async def load_extensions():
 Main function that starts the bot and connects it to discord
 '''
 async def main():
+    await connect_pool()
     print('bot online') # for control panel to know bot is running
     async with client:
         await load_extensions()

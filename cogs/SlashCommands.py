@@ -2,9 +2,9 @@ import discord
 import typing
 from discord.ext import commands
 from discord import app_commands
-from Database.DatabaseConnector import Database
+from Database.DatabaseConnector import AsyncDatabase
 
-sc = Database("SlashCommands.py")
+sc = AsyncDatabase("cogs.SlashCommands.py")
 
 class SlashCommands(commands.Cog):
     def __init__(self, client):
@@ -90,7 +90,7 @@ class SlashCommands(commands.Cog):
         # Select will return a value if ONE is found, a list (array) if
         # multiple values are found, or [] (empty list) if nothing is
         # found.
-        val = sc.exec(
+        val = await sc.execute(
             "SELECT val FROM STATISTICS WHERE "
             f"stat='TEST_COMMAND' AND user_id='{interaction.user.id}'"
         )
@@ -98,7 +98,7 @@ class SlashCommands(commands.Cog):
             # Insert does as it sounds, it will insert values
             # into the 'STATISTICS' table and can be referenced
             # using the select command.
-            sc.exec(
+            await sc.execute(
                 "INSERT INTO STATISTICS (user_id,stat,val) VALUES "
                 f"('{interaction.user.id}', 'TEST_COMMAND', '0')"
             )
@@ -109,7 +109,7 @@ class SlashCommands(commands.Cog):
         # a search criteria. In this case, we are updating
         # 'val' where the user id is the id of the user
         # running this command and the stat=TEST_COMMAND
-        sc.exec(
+        await sc.execute(
             f"UPDATE STATISTICS SET val='{val+1}' WHERE "
             f"user_id='{interaction.user.id}' AND stat='TEST_COMMAND'"
         )
