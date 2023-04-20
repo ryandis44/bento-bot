@@ -1,8 +1,11 @@
+from random import randint
 import discord
 from discord.ext import commands
 from discord.ext.commands import Context
-
 from Database.GuildObjects import BentoMember
+from Database.DatabaseConnector import AsyncDatabase
+
+db = AsyncDatabase("cogs.TextCommands.py")
 
 
 '''
@@ -39,9 +42,19 @@ class TextCommands(commands.Cog):
         u = BentoMember(user=ctx.author, client=self.client)
         await u.ainit()
         
-
-        await ctx.channel.send(
-            content="hello world"
+        quotes: str = await db.execute(
+            "SELECT val FROM INFO WHERE variable='INSPIRATIONAL_QUOTES'"
+        )
+        if quotes == [] or quotes is None:
+            await ctx.send(
+                content="❗ Error: Could not find INSPIRATIONAL_QUOTES in database!"
+            )
+            return
+        
+        quotes = quotes.split("\n")
+        
+        await ctx.send(
+            content=quotes[randint(0, len(quotes)-1)]
         )
 
 

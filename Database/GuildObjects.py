@@ -35,8 +35,9 @@ class BentoGuild():
         self.client = client
         self.log_channel = client.get_channel(1073509692363517962) # miko-logs channel in The Boys Hangout
 
-    async def ainit(self, check_exists: bool = True):
-        if check_exists:
+    async def ainit(self, check_exists: bool = True, skip_if_locked: bool = False):
+        if check_exists and \
+            not (skip_if_locked and lock_status(key=self.guild.id)):
             async with check_lock(key=self.guild.id): # avoid duplicates
                 await self.__exists()
 
@@ -66,7 +67,6 @@ class BentoGuild():
     async def add_all_members(self) -> None:
         for member in self.guild.members:
             u = BentoMember(user=member, client=self.client)
-            print(u)
             await u.ainit(check_exists_guild=False, skip_if_locked=True)
         await self.set_member_numbers()
 
@@ -123,8 +123,8 @@ class BentoMember(BentoGuild):
         if (check_exists and not self.user.pending) and \
             not (skip_if_locked and lock_status(key=self.user.id)):
             async with check_lock(key=self.user.id):
-                await super().ainit(check_exists=check_exists_guild)
                 await self.__exists()
+                await super().ainit(check_exists=check_exists_guild)
 
     def __str__(self):
         return f"{self.user} - {self.guild} | BentoMember Object"
