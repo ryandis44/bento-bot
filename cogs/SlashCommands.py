@@ -3,6 +3,7 @@ import typing
 from discord.ext import commands
 from discord import app_commands
 from Database.DatabaseConnector import AsyncDatabase
+from Database.GuildObjects import BentoMember
 
 sc = AsyncDatabase("cogs.SlashCommands.py")
 
@@ -129,6 +130,7 @@ class SlashCommands(commands.Cog):
     will not be run at all.
     '''
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
+        await BentoMember(user=interaction.user, client=interaction.client).ainit()
         return True
 
 
