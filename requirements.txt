@@ -1,5 +1,5 @@
 python-dotenv==0.19.2
-discord.py==2.2.2
+discord.py==2.2.3
 discord.py-Console==0.1.2
 pycparser==2.21
 PyNaCl==1.5.0
