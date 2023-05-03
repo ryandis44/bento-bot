@@ -65,6 +65,7 @@ class TextCommands(commands.Cog):
         vc = None
         if author.voice and author.voice.channel:
             vc = author.voice.channel
+        else: await ctx.send("You are not in a voice channel.")
         await vc.connect()
         get_audio(url)
         player = vc.play(discord.FFmpegOpusAudio('audio.opus'))
