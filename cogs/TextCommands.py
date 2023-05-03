@@ -4,6 +4,7 @@ from discord.ext import commands
 from discord.ext.commands import Context
 from Database.GuildObjects import BentoMember
 from Database.DatabaseConnector import AsyncDatabase
+from misc.misc import get_audio
 
 db = AsyncDatabase("cogs.TextCommands.py")
 
@@ -56,6 +57,17 @@ class TextCommands(commands.Cog):
         await ctx.send(
             content=quotes[randint(0, len(quotes)-1)]
         )
+    
+    @commands.command(name='play', aliases=['p'])
+    @commands.guild_only()
+    async def play_audio(self, ctx: Context, url):
+        author = ctx.message.author
+        vc = None
+        if author.voice and author.voice.channel:
+            vc = author.voice.channel
+        await vc.connect()
+        get_audio(url)
+        player = vc.play(discord.FFmpegOpusAudio('audio.opus'))
 
 
 
